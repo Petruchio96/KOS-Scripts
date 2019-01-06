@@ -167,6 +167,24 @@ Function ClearAllScience {
         //only proceed is the experiment doesn't already have data
 		if Sensor:getmodule("ModuleScienceExperiment"):hasdata {
             
+            //If it the part is a science bay, we need to reset it.
+            //Deleting the data will not allow the experiement to be run again 
+            if Sensor:NAME = ("science.module") {
+                if Sensor:getmodule("ModuleScienceExperiment"):hasevent("reset materials bay") {
+                    Sensor:getmodule("ModuleScienceExperiment"):doevent("reset materials bay").
+                    set counter to counter + 1.
+                }
+            }.
+
+            //If it the part is a goo canister, we need to reset it.
+            //Deleting the data will not allow the experiement to be run again
+            if Sensor:NAME = ("GooExperiment") {
+                if Sensor:getmodule("ModuleScienceExperiment"):hasevent("reset goo canister") {
+                    Sensor:getmodule("ModuleScienceExperiment"):doevent("reset goo canister").
+                    set counter to counter + 1.
+                }
+            }.
+
             if Sensor:getmodule("ModuleScienceExperiment"):hasaction("delete data"){  
                 Sensor:getmodule("ModuleScienceExperiment"):doaction("delete data", true).
                 set counter to counter + 1.
@@ -177,7 +195,7 @@ Function ClearAllScience {
                 set counter to counter + 1.
             }.
         }
-    }
+    }.
     Return counter.
 }.
 

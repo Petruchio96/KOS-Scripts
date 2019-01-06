@@ -141,7 +141,7 @@ _**Optional Parameters:** None_
 
 ### Function ClearAllScience()
 
-**Description:**  Resets all science experiments and crew reports.  Science is lost on the science parts (experiements)when this function is run.  This is useful when you've already collected all the science in the Experiment Storage Unit, and there are duplicate results that remain still on the science part(s).  Running this fuction WILL NOT erase science in the Experiment Storage Unit - just on the experiements themselves.
+**Description:**  Resets all science experiments and crew reports.  Science is lost on the science parts (experiements)when this function is run.  Goo Canisters and Science Bays are reset, so they can be run again. This is useful when you've already collected all the science in the Experiment Storage Unit, and there are duplicate results that still remain on the science part(s).  Running this fuction WILL NOT erase science in the Experiment Storage Unit - just on the experiements themselves.
 
 **Required Parameters:**  None
 
