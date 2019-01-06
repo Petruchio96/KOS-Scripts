@@ -44,9 +44,7 @@ until Done {
         Clearscreen.
         ResetScreen().
         print ("Reset " + ClearAllScience(sensorlist) + " experiments") at(0,7).
-
-//Any key, not just "4" will end the program
-    } else {
+    } else if UserChoice = 4 {
         set Done to True.
     }
 }.

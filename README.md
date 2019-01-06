@@ -1,7 +1,7 @@
 # Kos-Scripts
 General Functions and programs to use with the Kerbal Operating System - KOS
 
-Updated 1/3/19
+Updated 1/6/19
 
 ## SyncLong.ks(longitude, altitude)
 
@@ -19,10 +19,9 @@ This is especially useful for launching a ship to synchronous orbit directly ove
 1. Run all science experiments - Runs the GetAllScience() function in StandardLib.ks
 2. Collect all science - Finds an Experiment Storage Unit and has it collect all science.
 3. Clear all science experiments - Runs ClearAllScience() function and resets all experiements and crew reports.
-4. End Program - at this time any key besides 1, 2, or 3 ends the program
+4. End Program 
 
 **Dependancies:**  Standard_lib.ks
-
 
 ## ExecuteNextNode.ks
 
