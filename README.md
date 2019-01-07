@@ -45,7 +45,7 @@ _**Optional Parameters:** none_
 * Function CalcChargeTime(DataSize, _Optional ChargePerMit_)
 * Function ShipMaxCharge()
 * Function GetESU()
-* Function ClearAllScience()
+* Function ClearAllScience(_Optional SensorList_)
 * Function GetDeployableAntList()
 * Function ExtendAllAnts(_Optional AntList_)
 * Function RetractAllAnts(_Optional AntList_)
@@ -138,13 +138,13 @@ _**Optional Parameters:** None_
 
 _**Optional Parameters:** None_
 
-### Function ClearAllScience()
+### Function ClearAllScience(_Optional SensorList_)
 
 **Description:**  Resets all science experiments and crew reports.  Science is lost on the science parts (experiements)when this function is run.  Goo Canisters and Science Bays are reset, so they can be run again. This is useful when you've already collected all the science in the Experiment Storage Unit, and there are duplicate results that still remain on the science part(s).  Running this fuction WILL NOT erase science in the Experiment Storage Unit - just on the experiements themselves.
 
 **Required Parameters:**  None
 
-_**Optional Parameters:** None_
+_**Optional Parameters:** Sensor list - a list of science parts the user can send to the function._
 
 ### Function GetDeployableAntList()
 

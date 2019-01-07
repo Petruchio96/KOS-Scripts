@@ -119,7 +119,9 @@ function ExtendAllAnts {
         set AntList to GetDeployableAntList().
     }.
     For Ant in AntList {
-        Ant:getmodule("ModuleDeployableAntenna"):doaction("extend antenna", true).
+        if Ant:getmodule("ModuleDeployableAntenna"):hasaction("extend antenna"){
+            Ant:getmodule("ModuleDeployableAntenna"):doaction("extend antenna", true).
+        }
     }
 }.
 
@@ -131,7 +133,9 @@ function RetractAllAnts {
         set AntList to GetDeployableAntList().
     }.
     For Ant in AntList {
-        Ant:getmodule("ModuleDeployableAntenna"):doaction("retract antenna", true).
+        if Ant:getmodule("ModuleDeployableAntenna"):hasaction("retract antenna"){
+            Ant:getmodule("ModuleDeployableAntenna"):doaction("retract antenna", true).
+        }
     }
 }.
 
@@ -167,31 +171,31 @@ Function ClearAllScience {
         //only proceed is the experiment doesn't already have data
 		if Sensor:getmodule("ModuleScienceExperiment"):hasdata {
             
-            if Sensor:NAME = ("science.module") {
-            //If it the part is a science bay, we need to reset it.
-            //Deleting the data will not allow the experiement to be run again 
-                if Sensor:getmodule("ModuleScienceExperiment"):hasevent("reset materials bay") {
-                    Sensor:getmodule("ModuleScienceExperiment"):doevent("reset materials bay").
-                    set counter to counter + 1.
-                }
-            } else if Sensor:NAME = ("GooExperiment") {
+            if Sensor:NAME = ("GooExperiment") {
             //If it the part is a goo canister, we need to reset it.
             //Deleting the data will not allow the experiement to be run again
                 if Sensor:getmodule("ModuleScienceExperiment"):hasevent("reset goo canister") {
                     Sensor:getmodule("ModuleScienceExperiment"):doevent("reset goo canister").
                     set counter to counter + 1.
                 }
+            } else if Sensor:NAME = ("science.module") {
+            //If it the part is a science bay, we need to reset it.
+            //Deleting the data will not allow the experiement to be run again
+                if Sensor:getmodule("ModuleScienceExperiment"):hasevent("reset materials bay") {
+                    Sensor:getmodule("ModuleScienceExperiment"):doevent("reset materials bay").
+                    set counter to counter + 1.
+                }               
             } else if Sensor:getmodule("ModuleScienceExperiment"):hasaction("delete data"){  
                 Sensor:getmodule("ModuleScienceExperiment"):doaction("delete data", true).
-                set counter to counter + 1.
-            } else if Sensor:getmodule("ModuleScienceExperiment"):hasaction("discard data"){ 
-            //Discard data is needed for the Atmospheric Fluid Spectro-Variometer 
-                Sensor:getmodule("ModuleScienceExperiment"):doaction("discard data", true).
                 set counter to counter + 1.
             } else if Sensor:getmodule("ModuleScienceExperiment"):hasaction("discard crew report"){  
                 Sensor:getmodule("ModuleScienceExperiment"):doaction("discard crew report", true).
                 set counter to counter + 1.
-            }
+            } else if Sensor:getmodule("ModuleScienceExperiment"):hasaction("discard data"){ 
+            //Discard data is needed for the Atmospheric Fluid Spectro-Variometer - others?
+                Sensor:getmodule("ModuleScienceExperiment"):doaction("discard data", true).
+                set counter to counter + 1.
+            } 
         }
     }.
     Return counter.
@@ -250,6 +254,7 @@ Function GetAllScience {
 		}
 	}
     if Verbose {print ("Completed " + Counter + " available science experiments").}
+    return SensorList.
 }.
 function TransmitAllScience {
 //Transmits all science experiments that have data on the ship or from a list of sensors sent to the function
@@ -258,7 +263,7 @@ function TransmitAllScience {
     Declare Parameter WarpTime is True.  //Optional parameter - lets the user decide if warp while waiting    
     Declare Parameter Verbose is True.  //Optional parameter - if true prints messages
     Declare Parameter ChargePerMit is 10. //Optional parameter to know the charge per mit for antenna being used
-    //Defaulted to 10 (Communotron 88) - the highest of the smaller sized antennas
+                                          //Defaulted to 10 (Communotron 88) - the highest of the smaller sized antennas
 
     Declare Local Datalist to list().
     Declare Local Charge to 0.0.
