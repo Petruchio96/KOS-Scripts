@@ -80,36 +80,52 @@ function ShipMaxCharge {
     return amount.
 }.
 
-function GetESU {
-//Returns an Experiment Storage Unit Part
+function GetESUlist {
+//Returns a list of 1 ESU part (first it finds) or a blank list if none on ship.
+    Declare Local plist to List().
+    Declare Local NumInList to 0.
+
+    Set plist to ship:PARTSNAMED("ScienceBox").
+    if plist:length = 0 {
+        print("No ESU on this ship").
+        Return plist.
+    }.
     
-    Declare Local plist to ship:parts.
-    
-        for item in plist {
-            if item:name = "ScienceBox" {
-                return item.
-            }
+    //Remove any extra ESUs and only return the 1st if found
+    If plist:length > 1 {
+        set NumInList to plist:length.
+        From {Local I is NumInList.} UNTIL I = 1 STEP {set I to I - 1.} do {
+            plist:remove(I-1).
         }
-    print("No ESU on this ship").
-    Return false.
+    }.
+    Return plist.    
 }. 
 
 function GetDeployableAntList {
 //Returns a list of Deployable Antennas
     Declare Local AntList to list().
-    Declare Local ModuleList to list().
     Declare Local plist to ship:parts.
     
         for item in plist {
-            set ModuleList to item:modules.
-            for mod in modulelist {
-                if mod = "ModuleDeployableAntenna" {
-                    AntList:add(item).
-                }
+            if item:hasmodule("ModuleDeployableAntenna") {
+                AntList:add(item).
             }
         }
     return AntList.
 }. 
+
+function GetNonDeployableAntList {
+//Returns a list of Non-Deployable Antennas
+    Declare Local AntList to list().
+    Declare Local plist to ship:parts.
+
+        for item in plist {
+            if NOT item:hasmodule("ModuleDeployableAntenna") AND NOT item:hasmodule("ModuleCommand") AND item:hasmodule("ModuleDataTransmitter"){
+                AntList:add(item).
+            }
+        }.
+    return AntList.
+}.
 
 function ExtendAllAnts {
 //Extend all Deployable Antennas or deploy a list of antennas
@@ -142,15 +158,11 @@ function RetractAllAnts {
 function GetSensorList {
 //Returns a list of all science parts
     Declare Local SensorList to list().
-    Declare Local ModuleList to list().
     Declare Local plist to ship:parts.
     
         for item in plist {
-            set ModuleList to item:modules.
-            for mod in modulelist {
-                if mod = "ModuleScienceExperiment" {
-                    SensorList:add(item).
-                }
+            if item:hasmodule("ModuleScienceExperiment") {
+                SensorList:add(item).
             }
         }
     return SensorList.
@@ -256,6 +268,7 @@ Function GetAllScience {
     if Verbose {print ("Completed " + Counter + " available science experiments").}
     return SensorList.
 }.
+
 function TransmitAllScience {
 //Transmits all science experiments that have data on the ship or from a list of sensors sent to the function
 
@@ -278,12 +291,23 @@ function TransmitAllScience {
     Declare Local DataName to " ".
     Declare Local AntList to GetDeployableAntList().
 
-    print (" ").
+    //Must have antennas to transmit data
+    if AntList:length = 0 {
+        set Antlist to GetNonDeployableAntList().
+        if AntList:length = 0 {        
+            if Verbose {print ("****NO ANTENNAS ON SHIP - ABORTING TRANSMISSION ****").}
+            return false.
+        }
+        //Must reset Antlit to a deployable list, otherwise ExtendAllAnts() will crash.
+        Set AntList to GetDeployableAntList().
+    }.
+
+    if Verbose {print (" ").}
     //Check if comms to KSC, else stop here and return false
     if HomeConnection:IsConnected = false {
         if Verbose {print ("****NO CONNECTION TO KSC - ABORTING TRANSMISSION ****").}
         return false.
-    }
+    }.
 
     //Deploy all antennas
     ExtendAllAnts(AntList).
@@ -391,8 +415,7 @@ function TransmitAllScience {
         //There is a delay when an antenna is done before it can xmit again00
         Wait .5.  
     }. 
-    Print ("All Science Data Transmitted").
-    return Success.
+    if Verbose {Print ("All Science Data Transmitted").}
 }.
 
 print("Loaded Library Standard_Lib.ks").

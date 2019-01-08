@@ -44,18 +44,17 @@ _**Optional Parameters:** none_
 * Function CheckCharging()
 * Function CalcChargeTime(DataSize, _Optional ChargePerMit_)
 * Function ShipMaxCharge()
-* Function GetESU()
+* Function GetESUlist()
 * Function ClearAllScience(_Optional SensorList_)
 * Function GetDeployableAntList()
+* Function GetNonDeployableAntList()
 * Function ExtendAllAnts(_Optional AntList_)
 * Function RetractAllAnts(_Optional AntList_)
 * Function GetSensorList()
 
 ### Function GetAllScience(_Optional SensorList, Optional Verbose_)
 
-**Description:**  Runs all science experiments available on the ship, or only on a list of science parts that is passed 
-to the function as a parameter.  If the ship (or the list) has more than 1 Goo or Science Bay, only 1 of each will be
-used.  
+**Description:**  Runs all science experiments available on the ship, or only on a list of science parts that is passed to the function as a parameter.  If the ship (or the list) has more than 1 Goo or Science Bay, only 1 of each will be used.  
 
 **Required functions called:**  GetSensorList()
 
@@ -67,12 +66,7 @@ used.
 
 ### Function TransmitAllScience(_Optional SensorList, Optional WarpTime, Optional Verbose, Optional ChargePerMit_)
 
-**Description:**  Transmits all science data available on the ship, or only a list of science parts that is passed to
-the function as a parameter.  For each science experiment it will check to see if there is enough charge.  If not,
-it will check to see if the ship is charging and calculate the time required to charge.  The function will warp by
-default unless the optional parameter WarpTime is passed in as "false."  The fuction aborts if the ship's total
-charge capacity isn't enough to transmit the data or if the ship is not charging and there's not enough charge to
-transmit.  If all science is transmitted the function returns "Success." 
+**Description:**  Transmits all science data available on the ship, or only a list of science parts that is passed to the function as a parameter.  The ship must have an external antenna part with a connection to the KSC to transmit; otherwise, the function will abort.  This will not use the data transmitter in a command module. For each science experiment it will check to see if there is enough charge.  If not, it will check to see if the ship is charging and calculate the time required to charge.  The function will warp by default unless the optional parameter WarpTime is passed in as "false."  The fuction aborts if the ship's total charge capacity isn't enough to transmit the data, or if the ship is not charging and there's not enough charge to transmit.  
 
 **Required functions called:**  
 * GetDeployableAntList()
@@ -91,9 +85,7 @@ _**Optional Parameters:**_
 * _ChargePerMit - if you know the charge permit for the antenna, pass this for more accurate_ _time calculations._
 
 
-_**Known Issues:**_ Do not use this while the ship is at high velocity and in an atmosphere.  It will deploy the 
-antennas and break them.  I do not know how to make KSP select a specific antenna to transmit, therefore I wrote the
-function to extend all the antennas and use which ever one KSP picks.  _**If you know how to specify a particular antenna for KSP to use for each transmission let me know!**_
+_**Known Issues:**_ Do not use this while the ship is at high velocity and in an atmosphere.  It will deploy the antennas and break them.  I do not know how to make KSP select a specific antenna to transmit, therefore I wrote thefunction to extend all the antennas and use which ever one KSP picks.  _**If you know how to specify a particular antenna for KSP to use for each transmission let me know!**_
 
 ### Function GetYorN(_Optional DisplayText_)
 
@@ -130,9 +122,9 @@ _**Optional Parameters:** ChargePerMit - this is the charge required to send one
 
 _**Optional Parameters:** None_
 
-### Function GetEsu()
+### Function GetEsulist()
 
-**Description:**  Searches the ship for an Experiment Storage Unit or "Science Box".  Finds the first one and returns the part.  Returns "False" if there is no ESU on the ship.
+**Description:**  Searches the ship for an Experiment Storage Unit or "Science Box".  Finds the first one and returns a list with just 1 ESU - the first one it finds.  Returns a blank list if there is no ESU on the ship.
 
 **Required Parameters:**  None
 
@@ -149,6 +141,14 @@ _**Optional Parameters:** Sensor list - a list of science parts the user can sen
 ### Function GetDeployableAntList()
 
 **Description:**  Returns a list of antenna parts that can extend or retract (fixed antennas not included).  The function checks all the parts on the ship and returns a list of parts of just antennas that can extend or retract.
+
+**Required Parameters:**  None
+
+_**Optional Parameters:** None_
+
+### Function GetNonDeployableAntList()
+
+**Description:**  Returns a list of fixed, non deployable antenna parts.  The function checks all the parts on the ship and returns a list of parts of just fixed antennas.  This does not include the transmitter in a command module
 
 **Required Parameters:**  None
 
@@ -172,7 +172,7 @@ _**Optional Parameters:** AntList - a list of parts, must only be deployable ant
 
 ### Function GetSensorList()
 
-**Description:**  Returns a list of parts that can perform science and save data.  The function checks all the parts on the ship and returns a list of just science parts.
+**Description:**  Returns a list of parts that can perform science and save data.  The function checks all the parts on the ship and returns a list of those that can perform science.
 
 **Required Parameters:**  None
 
