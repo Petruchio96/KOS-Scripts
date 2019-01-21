@@ -285,7 +285,7 @@ function TransmitAllScience {
     Declare Local WaitTime to 1.0.
     Declare Local WarpDelay to 0.0.
     Declare Local ChargeCapacity to 0.0.
-    Declare Local Success to true.
+    Declare Local Success to True.
     Declare Local DataName to " ".
     Declare Local ReserveCharge to 0.05.                //Minimum % no to let ship charge drop below
     Declare Local AntList to GetDeployableAntList().

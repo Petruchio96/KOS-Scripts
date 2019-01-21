@@ -14,10 +14,10 @@
 
 run Standard_Lib.ks.
 
-declare sensorlist to GetSensorList().
-declare UserChoice to "none".
-declare ESUList to GetESUlist().
-declare Done is False.
+Declare sensorlist to GetSensorList().
+Declare UserChoice to "none".
+Declare ESUList to GetESUlist().
+Declare Done is False.
 
 function ResetScreen{
     Clearscreen.
