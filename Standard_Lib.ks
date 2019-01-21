@@ -51,21 +51,17 @@ function CheckCharging {
 }.
 
 function CalcChargeTime {
-//Returns the time until the ship charges enough to transmit a given amount of science data 
-    Declare Parameter DataSize.  //Required parameter - the size of the data needed to be transmitted
-    Declare Parameter PerMit is 10.//Optional parameter 
-    //- the amount of charge needed to transmit 1 "Mit" of data.  This varies per antenna.  Highest stock is 10
-    
+//Returns the time needed for a ship to increase it's charge by a specific charge amount
+    Declare Parameter ChargeNeeded.  //Required parameter - the amount of charge needed to increase
+
     Declare Local Charge1 to 0.0.
     Declare Local Charge2 to 0.0.
-    Declare Local ChargePerSec to 0.0.
         
     set Charge1 to ship:electriccharge.
-        wait 0.25.
+        wait 0.5.
     set Charge2 to ship:electriccharge.
-    set ChargePerSec to (Charge2 - Charge1) / 0.25.
-   
-    return ((DataSize * PerMit) - ship:electriccharge) / ChargePerSec.
+
+    return ChargeNeeded / ((Charge2 - Charge1) / 0.5).
 }.
 
 function ShipMaxCharge {
@@ -271,24 +267,27 @@ Function GetAllScience {
 
 function TransmitAllScience {
 //Transmits all science experiments that have data on the ship or from a list of sensors sent to the function
+//Returns True only if all science is successfuly transmitted, else returns False.
 
-	Declare Parameter SensorList is list().  //Optional parameter - list of science parts to xmit data
-    Declare Parameter WarpTime is True.  //Optional parameter - lets the user decide if warp while waiting    
-    Declare Parameter Verbose is True.  //Optional parameter - if true prints messages
-    Declare Parameter ChargePerMit is 10. //Optional parameter to know the charge per mit for antenna being used
-                                          //Defaulted to 10 (Communotron 88) - the highest of the smaller sized antennas
+	Declare Parameter SensorList is list(). //Optional parameter - list of science parts to xmit data
+    Declare Parameter WarpTime is True.     //Optional parameter - lets the user decide if warp while waiting    
+    Declare Parameter Verbose is True.      //Optional parameter - if true prints messages
+    Declare Parameter ChargePerMit is 24.   //Optional parameter to know the charge per mit for antenna being used
+                                            //Defaulted to 24 (RA-2 Relay) - the highest of all the antennas
+    Declare Parameter TransSpeed is 2.86.   //Optional Parameter to know the antenna transmission speed
+                                            //Defaulted to 2.86, (RA-2 Relay) - the slowest antenna
 
     Declare Local Datalist to list().
     Declare Local Charge to 0.0.
     Declare Local ChargeTime to 0.0.
-    Declare Local DataSize to 0.0.
-    Declare Local TransSpeed to 5.0.
+    Declare Local DataSize to 0.0.    
     Declare Local IsCharging to true.
     Declare Local WaitTime to 1.0.
     Declare Local WarpDelay to 0.0.
     Declare Local ChargeCapacity to 0.0.
     Declare Local Success to true.
     Declare Local DataName to " ".
+    Declare Local ReserveCharge to 0.05.                //Minimum % no to let ship charge drop below
     Declare Local AntList to GetDeployableAntList().
 
     //Must have antennas to transmit data
@@ -338,73 +337,49 @@ function TransmitAllScience {
             set ChargeCapacity to ShipMaxCharge().
             if Verbose {print "     Current Charge: " + round(ship:electriccharge, 1).}
             if Verbose {print "     Needed Charge: " + ChargePerMit * DataSize.}
-            if ChargeCapacity < (ChargePerMit * DataSize) + 2 {
+            if ChargeCapacity < (ChargePerMit * DataSize) + (ChargeCapacity * ReserveCharge) {
                 if Verbose {print ("     Vessel Electric Charge capacity not sufficient to transmit").}
                 if Verbose {print ("     ****Aborting Transmission****").}
                 set Success to false.
             } else {
                 
-                //Check if current charge is enough, if so xmit
+                //Check if current charge is enough while maintaining reserve charge
                 set Charge to ship:electriccharge.
-                if Charge > ChargePerMit * DataSize + 2 {
+                if Charge > (ChargePerMit * DataSize) + (ChargeCapacity * ReserveCharge) {
                     set WaitTime to (DataSize / TransSpeed) + 2.
                     Sensor:getmodule("ModuleScienceExperiment"):transmit().
-                    if Verbose {print "     Transmission time:  " + WaitTime + " seconds.".}
-                    wait WaitTime. //wait while antenna xmits   
+                    if Verbose {print "     Transmission time:  " + round(WaitTime, 1) + " seconds.".}   
                     wait until Sensor:getmodule("ModuleScienceExperiment"):hasdata = false.
+                    wait WaitTime. //wait while antenna xmits
                     if Verbose {print ("     Transmission complete.").}    
                     if Verbose {print (" ").}                 
                 } else {
                     if Verbose {print ("        Not enough charge.").} 
-                    set ChargeTime to CalcChargeTime(DataSize, ChargePerMit).
                     set IsCharging to CheckCharging().
+                    //add 0.005 or to make sure the Charge time gets the ship charged slightly above the ReserveCharge
+                    set ChargeTime to CalcChargeTime((DataSize * ChargePerMit) + (ChargeCapacity * (ReserveCharge + 0.005)) - Charge).
                     if Verbose {print "         Charging time is " + round(ChargeTime,1) + " seconds".}
 
-                    //wait until there is enough charge, exit function if not charging
-                    until Charge > ChargePerMit * DataSize + 2  or not (IsCharging) {
-                        set ChargeTime to CalcChargeTime(DataSize, ChargePerMit).
-                        set Charge to ship:electriccharge.       
-                        set IsCharging to CheckCharging().                 
-                        
-                        //Time Warp and update charge time 
-                        if WarpTime {
-                            if ChargeTime > 60 {
-                                set WarpDelay to ChargeTime - 10.
-                                if Verbose {print ("        Warping...").}                            
-                                set warp to 4.
-                                wait WarpDelay.
-                                if Verbose {print "         Charging time is " + round(ChargeTime - WarpDelay,1) + " seconds".}
-                            } else if ChargeTime > 30 and ChargeTime <= 60 {
-                                set WarpDelay to ChargeTime - 10.
-                                if Verbose {print ("        Warping...").}
-                                set warp to 3.
-                                wait WarpDelay.
-                            } else if ChargeTime > 15 and ChargeTime <= 30 {
-                                set WarpDelay to ChargeTime - 5.
-                                if Verbose {print ("        Warping...").}
-                                set warp to 2.
-                                wait WarpDelay.
-                            } else {
-                                set warp to 0.
-                            }
-                        }
-                        wait 1. //wait during the until loop to update charge, chargetime, and checkcharging
+                    // //wait until there is enough charge, exit function if not charging
+                    until Charge > ((ChargePerMit * DataSize) + ChargeCapacity * ReserveCharge) or not (IsCharging) {
+                        WarpTo(time:seconds + ChargeTime).
+                        wait ChargeTime + 1.
+                        set ChargeTime to CalcChargeTime((DataSize * ChargePerMit) + (ChargeCapacity * (ReserveCharge + 0.005)) - Charge).
+                        set IsCharging to CheckCharging().
+                        set Charge to ship:electriccharge.
                     }
-                    set warp to 0.  //Just in case exited loop on ship not charging.
 
                     //exit function if ship not charging.
                     if not (IsCharging) {
                         if Verbose {print("****Not charging. Aborting ALL Transmissions****").}
-                        set Success to false.
-                        return Success.
+                        return false.
                     //else the ship has the charge and we can xmit
                     } else {
                         set WaitTime to (DataSize / TransSpeed) + 2.
                         Sensor:getmodule("ModuleScienceExperiment"):transmit().
-                        //wait 1.  //wait for antenna to deploy
-                        if Verbose {print "     Transmission time:  " + WaitTime + " seconds.".}
-                        wait WaitTime.  //wait while antenna xmits     
-                        wait until Sensor:getmodule("ModuleScienceExperiment"):hasdata = false.      
+                        if Verbose {print "     Transmission time:  " + round(WaitTime, 1) + " seconds.".}
+                        wait until Sensor:getmodule("ModuleScienceExperiment"):hasdata = false. 
+                        wait WaitTime.  //wait while antenna xmits          
                         if Verbose {print ("     Transmission complete.").}   
                         if Verbose {print (" ").}                    
                     }               
@@ -412,10 +387,11 @@ function TransmitAllScience {
             } 
         }
         //Wait until transmitting next sensor. 
-        //There is a delay when an antenna is done before it can xmit again00
+        //There is a delay when an antenna is done before it can xmit again.
         Wait .5.  
     }. 
     if Verbose {Print ("All Science Data Transmitted").}
+    Return Success.
 }.
 
 print("Loaded Library Standard_Lib.ks").

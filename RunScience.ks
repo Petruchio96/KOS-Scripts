@@ -33,9 +33,9 @@ ResetScreen().
 until Done {
     set UserChoice to GetUserInput().
     if UserChoice = 1 {
-        GetAllScience(sensorlist, False).
         ResetScreen().
-        print("Ran all available science experiments") at(0,7).
+        GetAllScience(sensorlist, False).
+        print("Conducted " + sensorlist:length + " science experiments") at(0,7).
     } else if UserChoice = 2 {
         if ESUList:length = 0 {
             ResetScreen().
