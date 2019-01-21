@@ -1,7 +1,7 @@
 # Kos-Scripts
 General Functions and programs to use with the Kerbal Operating System - KOS
 
-Updated 1/21/19
+Updated 1/8/19
 
 ## SyncLong.ks(longitude, altitude)
 
