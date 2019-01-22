@@ -1,7 +1,7 @@
 # Kos-Scripts
 General Functions and programs to use with the Kerbal Operating System - KOS
 
-Updated 1/21/19
+Updated 1/22/19
 
 ## SyncLong.ks(longitude, altitude)
 
@@ -66,7 +66,7 @@ _**Optional Parameters:** none_
 
 ### Function TransmitAllScience(_Optional SensorList, Optional WarpTime, Optional Verbose, Optional ChargePerMit_, Optional TransSpeed)
 
-**Description:**  Transmits all science data available on the ship, or only a list of science parts that is passed to the function as a parameter.  The ship must have an external antenna part with a connection to the KSC to transmit; otherwise, the function will abort.  This will not use the data transmitter in a command module. For each science experiment it will check to see if there is enough charge.  If not, it will check to see if the ship is charging and calculate the time required to charge.  The function will warp by default unless the optional parameter WarpTime is passed in as "false."  The fuction aborts if the ship's total charge capacity isn't enough to transmit the data, or if the ship is not charging and there's not enough charge to transmit. Has a reserve charge variable set at 5%; this stops the function from dropping the total charge of the ship to below this percentage of it's total charge capacity.
+**Description:**  Transmits all science data available on the ship, or only a list of science parts that is passed to the function as a parameter.  The ship must have an external antenna part with a connection to the KSC to transmit; otherwise, the function will abort.  This will not use the data transmitter in a command module. For each science experiment it will check to see if there is enough charge.  If not, it will check to see if the ship is charging and calculate the time required to charge.  The function will warp by default unless the optional parameter WarpTime is passed in as "false."  The fuction aborts if the ship's total charge capacity isn't enough to transmit the data, or if the ship is not charging and there's not enough charge to transmit. Has a reserve charge variable set at 5%; this stops the function from dropping the total charge of the ship to below this percentage of it's total charge capacity.  Highly encouraged to use optional parameters ChargePerMit and TransSpeed to make sure the ship has just enough charge to transmit and accurate warping.
 
 **Required functions called:**  
 * GetDeployableAntList()

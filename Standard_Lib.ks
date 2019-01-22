@@ -55,13 +55,21 @@ function CalcChargeTime {
     Declare Parameter ChargeNeeded.  //Required parameter - the amount of charge needed to increase
 
     Declare Local Charge1 to 0.0.
+    Declare Local Charge1Time to 0.0.
     Declare Local Charge2 to 0.0.
+    Declare Local Charge2Time to 0.0.
         
     set Charge1 to ship:electriccharge.
-        wait 0.5.
+    set Charge1Time to Time:Seconds.
+        wait 0.25.
     set Charge2 to ship:electriccharge.
+    set Charge2Time to Time:Seconds.
 
-    return ChargeNeeded / ((Charge2 - Charge1) / 0.5).
+    if Charge1 = Charge2 {
+        return 0.
+    } else {
+        return ChargeNeeded / ((Charge2 - Charge1) / (Charge2Time - Charge1Time)).
+    }
 }.
 
 function ShipMaxCharge {
@@ -336,7 +344,7 @@ function TransmitAllScience {
             //Check if electric charge capacity of ship is enough to transmit this science
             set ChargeCapacity to ShipMaxCharge().
             if Verbose {print "     Current Charge: " + round(ship:electriccharge, 1).}
-            if Verbose {print "     Needed Charge: " + ChargePerMit * DataSize.}
+            if Verbose {print "     Needed Charge: " + (ChargePerMit * DataSize + Round(ReserveCharge * ChargeCapacity, 1)).}
             if ChargeCapacity < (ChargePerMit * DataSize) + (ChargeCapacity * ReserveCharge) {
                 if Verbose {print ("     Vessel Electric Charge capacity not sufficient to transmit").}
                 if Verbose {print ("     ****Aborting Transmission****").}
@@ -357,14 +365,14 @@ function TransmitAllScience {
                     if Verbose {print ("        Not enough charge.").} 
                     set IsCharging to CheckCharging().
                     //add 0.005 or to make sure the Charge time gets the ship charged slightly above the ReserveCharge
-                    set ChargeTime to CalcChargeTime((DataSize * ChargePerMit) + (ChargeCapacity * (ReserveCharge + 0.005)) - Charge).
+                    set ChargeTime to CalcChargeTime((DataSize * ChargePerMit) + (ChargeCapacity * ReserveCharge) - Charge).
                     if Verbose {print "         Charging time is " + round(ChargeTime,1) + " seconds".}
 
                     // //wait until there is enough charge, exit function if not charging
                     until Charge > ((ChargePerMit * DataSize) + ChargeCapacity * ReserveCharge) or not (IsCharging) {
                         WarpTo(time:seconds + ChargeTime).
-                        wait ChargeTime + 1.
-                        set ChargeTime to CalcChargeTime((DataSize * ChargePerMit) + (ChargeCapacity * (ReserveCharge + 0.005)) - Charge).
+                        wait ChargeTime.
+                        set ChargeTime to CalcChargeTime((DataSize * ChargePerMit) + (ChargeCapacity * ReserveCharge) - Charge + 1).
                         set IsCharging to CheckCharging().
                         set Charge to ship:electriccharge.
                     }
