@@ -1,7 +1,7 @@
 # Kos-Scripts
 General Functions and programs to use with the Kerbal Operating System - KOS
 
-Updated 1/22/19
+Updated 1/23/19
 
 ## SyncLong.ks(longitude, altitude)
 
@@ -12,6 +12,9 @@ This is especially useful for launching a ship to synchronous orbit directly ove
 **Required Parameters:**  
 * Dersired longitude in decimal form.  + for east, - for west.  
 * Altitude in meters.
+
+**Optional Paramenters:**  
+* _Verbose - suppresses printing messages to the terminal if set to false._
 
 ## RunScience.ks
 
@@ -62,7 +65,7 @@ _**Optional Parameters:** none_
 
 **Optional Paramenters:**  
 * _SensorList - must be a list of parts that are only science experiments._
-* _Verbose - Toggles printing messages to the terminal_
+* _Verbose - suppresses printing messages to the terminal if set to false._
 
 ### Function TransmitAllScience(_Optional SensorList, Optional WarpTime, Optional Verbose, Optional ChargePerMit_, Optional TransSpeed)
 
@@ -81,7 +84,7 @@ _**Optional Parameters:** none_
 _**Optional Parameters:**_ 
 * _SensorList - List, contains only science experiments._
 * _WarpTime - Boolean, set to false if you_ _don't want auto-warp._ 
-* _Verbose - Toggles printing messages to the terminal_
+* _Verbose - suppresses printing messages to the terminal if set to false._
 * _ChargePerMit - if you know the charge permit for the antenna, pass this for more accurate time calculations._
 * _TransSpeed - The transmission speed of the antenna in Mits/Sec_
 
