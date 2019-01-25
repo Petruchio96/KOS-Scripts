@@ -1,7 +1,7 @@
 # Kos-Scripts
 General Functions and programs to use with the Kerbal Operating System - KOS
 
-Updated 1/23/19
+Updated 1/25/19
 
 ## SyncLong.ks(longitude, altitude)
 
@@ -32,7 +32,8 @@ This is especially useful for launching a ship to synchronous orbit directly ove
 
 **Required Parameters:**  none
 
-_**Optional Parameters:** none_
+**Optional Parameters:** 
+* _WillWarp - Default is true, to warp to the manuever node start time._
 
 
 # Standard_Lib.ks Main Functions:

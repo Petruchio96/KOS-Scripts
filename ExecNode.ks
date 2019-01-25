@@ -4,6 +4,8 @@
 //Must have a manuever node already on the flight plan.  It will point to the node, warp if there's time,
 //burn hard, dial down the throttle for percision, finish the burn and the delete the node.
 
+Parameter WillWarp is True.  //Optional parameter to warp to the manuever node
+
 Declare Local n TO NEXTNODE.
 Declare Local a0 to 0.0.
 Declare Local a1 to 0.0.
@@ -16,6 +18,7 @@ Declare Local end_time to 0.0.
 Declare Local my_engines to List().
 
 // Point at the node.
+SAS off.
 LOCK STEERING TO n:BURNVECTOR.
 WAIT UNTIL VANG(SHIP:FACING:VECTOR, n:BURNVECTOR) < 2.
 
@@ -47,9 +50,10 @@ SET t TO n:BURNVECTOR:MAG / ((a0 + a1) / 2).
 SET start_time TO TIME:SECONDS + n:ETA - t/2.
 SET end_time TO TIME:SECONDS + n:ETA + t/2.
 
-//Come out of time warp 25 seconds before start time.
-WAIT UNTIL TIME:SECONDS >= start_time -25.
-set warp to 0.
+//Warp to 10 seconds before the burn time
+If WillWarp {
+    warpto(start_time - 10).
+}
 
 // Execute the burn.
 WAIT UNTIL TIME:SECONDS >= start_time.
