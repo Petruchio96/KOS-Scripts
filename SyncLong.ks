@@ -86,6 +86,7 @@ set ShipLong to ship:longitude.
 //after the body makes a complete rotation.  For example, if the Transit time is 7.25 days, then Kerbin will rotate 7 times 
 //and we just need the .25 to calculate the node angle.  Otherwise you will needlessly "lap" the planet waiting to the node. 
 if ClosingRate > 0 {    
+    //*** NEED TO CHANGE 21549.425 TO THE BODY'S SIDEREAL DAY IN SECONDS
     Set NodeAngle to 180 - (MOD(TransitTime, 21549.425) * BodyRotationSpeedInDegrees).
 } else { //If the ship is orbiting slower than the body's roation, then the body will rotate more than 180
    Set NodeAngle to (MOD(TransitTime, 21549.425) * BodyRotationSpeedInDegrees) - 180.
