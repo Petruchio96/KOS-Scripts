@@ -1,5 +1,4 @@
 # Kos-Scripts
-"Tiny Change"
 General Functions and programs to use with the Kerbal Operating System - KOS
 
 Updated 1/25/19
@@ -8,13 +7,13 @@ Updated 1/25/19
 
 **Description:**  This program calculates the maneuver node required to burn from a circular orbit around any body to reach the desired altitude at a specific longitude.  The ship will reach the desired altitude at apoapsis if going to a higher altitude than the current orbit, or periapsis if going to a lower altitude.  At that same point the ship will reach the desired longitude.
 
-This is especially useful for launching a ship to synchronous orbit directly over a particular spot.  See the comments in the file for examples on how to use it for single satellites or for a launcher with multiple satellites.
+This is especially useful for launching a ship to synchronous orbit directly over a particular spot.  See the comments in the file for examples on how to use it for single satellites or for a launcher with multiple satellites.  
 
-**Required Parameters:**
-* Dersired longitude in decimal form.  + for east, - for west.
+**Required Parameters:**  
+* Dersired longitude in decimal form.  + for east, - for west.  
 * Altitude in meters.
 
-**Optional Paramenters:**
+**Optional Paramenters:**  
 * _Verbose - suppresses printing messages to the terminal if set to false._
 
 ## RunScience.ks
@@ -23,7 +22,7 @@ This is especially useful for launching a ship to synchronous orbit directly ove
 1. Run all science experiments - Runs the GetAllScience() function in StandardLib.ks
 2. Collect all science - Finds an Experiment Storage Unit and has it collect all science.
 3. Clear all science experiments - Runs ClearAllScience() function and resets all experiements and crew reports.
-4. End Program
+4. End Program 
 
 **Dependancies:**  Standard_lib.ks
 
@@ -33,7 +32,7 @@ This is especially useful for launching a ship to synchronous orbit directly ove
 
 **Required Parameters:**  none
 
-**Optional Parameters:**
+**Optional Parameters:** 
 * _WillWarp - Default is true, to warp to the manuever node start time._
 
 
@@ -65,7 +64,7 @@ This is especially useful for launching a ship to synchronous orbit directly ove
 
 **Required Parameters:**  none
 
-**Optional Paramenters:**
+**Optional Paramenters:**  
 * _SensorList - must be a list of parts that are only science experiments._
 * _Verbose - suppresses printing messages to the terminal if set to false._
 
@@ -73,19 +72,19 @@ This is especially useful for launching a ship to synchronous orbit directly ove
 
 **Description:**  Transmits all science data available on the ship, or only a list of science parts that is passed to the function as a parameter.  The ship must have an external antenna part with a connection to the KSC to transmit; otherwise, the function will abort.  This will not use the data transmitter in a command module. For each science experiment it will check to see if there is enough charge.  If not, it will check to see if the ship is charging and calculate the time required to charge.  The function will warp by default unless the optional parameter WarpTime is passed in as "false."  The fuction aborts if the ship's total charge capacity isn't enough to transmit the data, or if the ship is not charging and there's not enough charge to transmit. Has a reserve charge variable set at 5%; this stops the function from dropping the total charge of the ship to below this percentage of it's total charge capacity.  Highly encouraged to use optional parameters ChargePerMit and TransSpeed to make sure the ship has just enough charge to transmit and accurate warping.
 
-**Required functions called:**
+**Required functions called:**  
 * GetDeployableAntList()
-* ExtendAllAnts(AntList)
-* GetSensorList()
-* ShipMaxCharge()
-* CalcChargeTime(ChargeNeeded)
+* ExtendAllAnts(AntList) 
+* GetSensorList() 
+* ShipMaxCharge() 
+* CalcChargeTime(ChargeNeeded) 
 * CheckCharging()
 
 **Required Parameters:**  none
 
-_**Optional Parameters:**_
+_**Optional Parameters:**_ 
 * _SensorList - List, contains only science experiments._
-* _WarpTime - Boolean, set to false if you_ _don't want auto-warp._
+* _WarpTime - Boolean, set to false if you_ _don't want auto-warp._ 
 * _Verbose - suppresses printing messages to the terminal if set to false._
 * _ChargePerMit - if you know the charge permit for the antenna, pass this for more accurate time calculations._
 * _TransSpeed - The transmission speed of the antenna in Mits/Sec_
@@ -95,7 +94,7 @@ _**Known Issues:**_ Do not use this while the ship is at high velocity and in an
 
 ### Function GetYorN(_Optional DisplayText_)
 
-**Description:**  Gives the user a prompt in the terminal (default is "Y or N") and captures and returns the user's input.  Only accpets Y or N (upper or lower case).
+**Description:**  Gives the user a prompt in the terminal (default is "Y or N") and captures and returns the user's input.  Only accpets Y or N (upper or lower case).  
 
 ### Function GetUserInput(_Optional DisplayText_)
 
@@ -105,7 +104,7 @@ _**Known Issues:**_ Do not use this while the ship is at high velocity and in an
 
 ### Function CheckCharging()
 
-**Description:**  Returns true if the ship's charge is increasing, false if not.
+**Description:**  Returns true if the ship's charge is increasing, false if not. 
 
 **Required Parameters:**  none
 _**Optional Parameters:** none_
@@ -158,7 +157,7 @@ _**Optional Parameters:** None_
 
 ### Function ExtendAllAnts(_Optional AntList_)
 
-**Description:**  Extends all deployable antennas on the ship or just the ones in a list passed to the function
+**Description:**  Extends all deployable antennas on the ship or just the ones in a list passed to the function 
 
 **Required Parameters:**  None
 
@@ -166,7 +165,7 @@ _**Optional Parameters:** AntList - a list of parts, must only be deployable ant
 
 ### Function RetractAllAnts(_Optional AntList_)
 
-**Description:**  Retracts all deployable antennas on the ship or just the ones in a list passed to the function
+**Description:**  Retracts all deployable antennas on the ship or just the ones in a list passed to the function 
 
 **Required Parameters:**  None
 
